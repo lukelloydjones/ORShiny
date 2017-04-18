@@ -1,0 +1,795 @@
+head(p1)
+d  <- beta / (2 * (se ^ 2) * (n - 2) + 2 * (beta ^ 2))
+a = -beta#
+b = beta - 2 * d * k * beta#
+c = beta * 2 * k * (1 - k) * d ^ 2 - k * (1 - k) * d + k * beta * (d - d^2)#
+p0 <- (-b + sqrt(b ^ 2 - 4 * a * c)) / (2 * a) #
+p1 <- p0 + d
+head(p1)
+head(p0)
+p0 <- array(0, dim(gen)[2])#
+p1 <- array(0, dim(gen)[2])#
+odds.tru <- array(0, dim(gen)[2])#
+for (i in seq(1, dim(gen)[2]))#
+{#
+  if (i %% 100 == 0) {print(i)}#
+  con <- gen[which(pheno.fam[, 3] == 1), i]#
+  cas <- gen[which(pheno.fam[, 3] == 2), i]#
+  if (length(which(is.na(con)))> 0)#
+  {#
+    p0[i] <- sum(con, na.rm = T) / (2 * length(con[-which(is.na(con))]))#
+    p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  } else if (length(which(is.na(cas)))> 0)#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas[-which(is.na(cas))]))#
+  } else#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  }#
+  odds.tru[i] <- (p1[i] * (1 - p0[i])) / ((1 - p1[i]) * p0[i])#
+}#
+head(p0)#
+head(p1)
+head(d)#
+a = -beta#
+b = beta - 2 * d * k * beta#
+c = beta * 2 * k * (1 - k) * d ^ 2 - k * (1 - k) * d + k * beta * (d - d^2)#
+p0_est <- (-b + sqrt(b ^ 2 - 4 * a * c)) / (2 * a) #
+p1_est <- p0 + d
+head(p0_est)
+head(p1_est)
+1- 0.25095688
+p0_est <- (-b - sqrt(b ^ 2 - 4 * a * c)) / (2 * a)
+p1_est <- p0 + d
+head(p0_est)
+head(p1_est)
+(p1_est - p1_est * p0_est) / (p0_est - p1_est * p0_est)
+p0_est <- (-b - sqrt(b ^ 2 - 4 * a * c)) / (2 * a) #
+p1_est <- p0_est + d#
+head(p0_est)#
+head(p1_est)#
+(p1_est - p1_est * p0_est) / (p0_est - p1_est * p0_est)
+or.est.2 <- (p1_est - p1_est * p0_est) / (p0_est - p1_est * p0_est)
+head(or.est.2)
+head(or.tru)
+head(odds.tru)
+head(1/odds.tru)
+source('~/Desktop/lmm_map_func.R')
+res.2      <- LlmToOddsRatio(df, 0, k)
+head(lmm.fil)
+res.2      <- LlmToOddsRatio(lmm.fil, 0, k)
+colnames(lmm.fil) <- c("SNP", "A1", "A2", "FREQ", "BETA", "SE", "P")
+head(lmm.fil)
+ref_p = 0
+if (ref_p == 1)#
+  {#
+	  lmm.fil  <- inner_join(df$SNP, ref.af, #
+		                       by = c("SNP" = "X1"))#
+	  p <- lmm.fil$X3#
+  } else#
+  {#
+ 	  p <- lmm.fil$FREQ#
+  }
+head(p)
+print(paste0("Observed prevalence ", k))#
+  beta     <- lmm.fil$BETA#
+  # -------------------#
+  # Odds ratios 1 and 2#
+  # -------------------#
+  or.map.1 <- 1 + beta / (k * (1 - k)) #
+  or.map.2 <- ((k + beta) / (1 - k - beta)) * ((1 - k) / k)#
+  # Odds ratio 3#
+  # -------------#
+  p_1 <- p  + (beta * p * (1 - p)) / k#
+  p_0 <- (p - k * p_1) / (1 - k)#
+  or.map.3  <- (p_1 * (1 - p_0)) / (p_0 * (1 - p_1))#
+  # -----------------------#
+  # Solve for the quadratic#
+  # -----------------------#
+  K <- k#
+  A <- K * (1 - K)#
+  B <- (1 - K)#
+  pp <- p#
+  c1 <- 2 * A * beta - beta * B + (4 * A * B * beta) / k  + #
+          ((B ^ 2) * (2 * A * beta - beta * k)) / (k ^ 2)#
+  c2 <- A  + beta * B - (4 * A * beta * pp) / k - #
+          (2 * B * pp * (2 * A * beta - beta * k) ) / (k ^ 2) - #
+          (B * (-A + beta * k) ) / k#
+  c3 <- (pp ^ 2 * (2 * A * beta - beta * k)) / (k ^ 2) + #
+	      (pp * (-A + beta * k)) / k#
+  p_0 <- (-c2 + sqrt(c2 ^ 2 - 4 * c1 * c3)) / (2 * c1)#
+  # -------------------#
+  # Odds ratio quadratic#
+  # --------------------#
+  p_1 <- (p - (1 - k) * p_0 ) / k#
+  or.map.gld  <- (p_1 * (1 - p_0)) / (p_0 * (1 - p_1))#
+  # -------------------#
+  # Odds ratio linear 2#
+  # --------------------#
+  p.x1.y0 <- ((1 - k - beta) * (2 * pp * (1 - pp))) / (1 - k - 2 * pp * beta)#
+  p.x2.y0 <- ((1- k - 2 * beta) * (pp ^ 2)) / (1 - k - 2 * pp * beta)#
+  p0      <- 0.5 * p.x1.y0 + p.x2.y0#
+  # p1#
+  # ---#
+  p.x1.y1 <- ((k + beta) * (2 * pp * (1 - pp))) / (k + 2 * pp * beta)#
+  p.x2.y1 <- ((k + 2 * beta) * (pp ^ 2)) / (k + 2 * pp * beta)#
+  p1      <- 0.5 * p.x1.y1 + p.x2.y1#
+  or.5 <- (p1 / (1 - p1)) * ((1 - p0) / p0)#
+  # -------------------#
+  # Bind up the results #
+  # -------------------#
+  res <- data.frame(lmm.fil$SNP, p,#
+                 lmm.fil$FREQ, #
+	             rep(k, length(lmm.fil$BETA)),#
+	             or.map.1,#
+	             or.map.2,#
+	             or.map.3,#
+	             or.map.gld)
+head(  res)
+colnames(res) <- c("SNP", "AF_REF", "AF_SAM", "K", #
+                     "OR_MAP_1","OR_MAP_2", "OR_MAP_3",  #
+                     "OR_MAP_GLD")
+# -----------------------------------------------------------------#
+# Function to map odds ratios from LMM to logistic regression#
+# -----------------------------------------------------------------#
+LlmToOddsRatio <- function(df, ref_p, k)#
+{#
+ colnames(lmm.fil) <- c("SNP", "A1", "A2", "FREQ", "BETA", "SE", "P")#
+ lmm.fil <- df#
+ if (ref_p == 1)#
+  {#
+	  lmm.fil  <- inner_join(df$SNP, ref.af, #
+		                       by = c("SNP" = "X1"))#
+	  p <- lmm.fil$X3#
+  } else#
+  {#
+ 	  p <- lmm.fil$FREQ#
+  }#
+  # Remember that we code the allele differently so its the negative#
+  # of the estimate#
+  # ---------------#
+  print(paste0("Observed prevalence ", k))#
+  beta     <- lmm.fil$BETA#
+  # -------------------#
+  # Odds ratios 1 and 2#
+  # -------------------#
+  or.map.1 <- 1 + beta / (k * (1 - k)) #
+  or.map.2 <- ((k + beta) / (1 - k - beta)) * ((1 - k) / k)#
+  # Odds ratio 3#
+  # -------------#
+  p_1 <- p  + (beta * p * (1 - p)) / k#
+  p_0 <- (p - k * p_1) / (1 - k)#
+  or.map.3  <- (p_1 * (1 - p_0)) / (p_0 * (1 - p_1))#
+  # -----------------------#
+  # Solve for the quadratic#
+  # -----------------------#
+  K <- k#
+  A <- K * (1 - K)#
+  B <- (1 - K)#
+  pp <- p#
+  c1 <- 2 * A * beta - beta * B + (4 * A * B * beta) / k  + #
+          ((B ^ 2) * (2 * A * beta - beta * k)) / (k ^ 2)#
+  c2 <- A  + beta * B - (4 * A * beta * pp) / k - #
+          (2 * B * pp * (2 * A * beta - beta * k) ) / (k ^ 2) - #
+          (B * (-A + beta * k) ) / k#
+  c3 <- (pp ^ 2 * (2 * A * beta - beta * k)) / (k ^ 2) + #
+	      (pp * (-A + beta * k)) / k#
+  p_0 <- (-c2 + sqrt(c2 ^ 2 - 4 * c1 * c3)) / (2 * c1)#
+  # -------------------#
+  # Odds ratio quadratic#
+  # --------------------#
+  p_1 <- (p - (1 - k) * p_0 ) / k#
+  or.map.gld  <- (p_1 * (1 - p_0)) / (p_0 * (1 - p_1))#
+  # -------------------#
+  # Odds ratio linear 2#
+  # --------------------#
+  p.x1.y0 <- ((1 - k - beta) * (2 * pp * (1 - pp))) / (1 - k - 2 * pp * beta)#
+  p.x2.y0 <- ((1- k - 2 * beta) * (pp ^ 2)) / (1 - k - 2 * pp * beta)#
+  p0      <- 0.5 * p.x1.y0 + p.x2.y0#
+  # p1#
+  # ---#
+  p.x1.y1 <- ((k + beta) * (2 * pp * (1 - pp))) / (k + 2 * pp * beta)#
+  p.x2.y1 <- ((k + 2 * beta) * (pp ^ 2)) / (k + 2 * pp * beta)#
+  p1      <- 0.5 * p.x1.y1 + p.x2.y1#
+  or.5 <- (p1 / (1 - p1)) * ((1 - p0) / p0)#
+  # -------------------#
+  # Bind up the results #
+  # -------------------#
+  res <- data.frame(lmm.fil$SNP, p,#
+                 lmm.fil$FREQ, #
+	             rep(k, length(lmm.fil$BETA)),#
+	             or.map.1,#
+	             or.map.2,#
+	             or.map.3,#
+	             or.map.gld)#
+  colnames(res) <- c("SNP", "AF_REF", "AF_SAM", "K", #
+                     "OR_MAP_1","OR_MAP_2", "OR_MAP_3",  #
+                     "OR_MAP_GLD")#
+  return(res)#
+}
+res.2      <- LlmToOddsRatio(lmm.fil, 0, k)
+lm(res$or.est ~ odds.tru)
+lm(res.2$OR_MAP_1   ~ odds.tru)
+lm(res.2$OR_MAP_2   ~ odds.tru)
+lm(res.2$OR_MAP_3   ~ odds.tru)
+lm(res.2$OR_MAP_GLD ~ odds.tru)
+head(lmm.fil)
+head(res.2)
+odds.tru[which(odds.tru < 1)] <- 1 / odds.tru[which(odds.tru < 1)]#
+odds.tru <- 1 / odds.tru#
+hist(odds.tru)
+p0 <- array(0, dim(gen)[2])#
+p1 <- array(0, dim(gen)[2])#
+odds.tru <- array(0, dim(gen)[2])#
+for (i in seq(1, dim(gen)[2]))#
+{#
+  if (i %% 100 == 0) {print(i)}#
+  con <- gen[which(pheno.fam[, 3] == 1), i]#
+  cas <- gen[which(pheno.fam[, 3] == 2), i]#
+  if (length(which(is.na(con)))> 0)#
+  {#
+    p0[i] <- sum(con, na.rm = T) / (2 * length(con[-which(is.na(con))]))#
+    p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  } else if (length(which(is.na(cas)))> 0)#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas[-which(is.na(cas))]))#
+  } else#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  }#
+  odds.tru[i] <- (p1[i] * (1 - p0[i])) / ((1 - p1[i]) * p0[i])#
+}#
+head(p0)#
+head(p1)
+odds.tru <- 1 / odds.tru
+hist(odds.tru)
+lmm.fil <- lmm.res.df#
+head(lmm.fil)#
+source('~/Desktop/lmm_map_func.R')#
+head(lmm.fil)#
+res.2      <- LlmToOddsRatio(lmm.fil, 0, k)#
+head(res)#
+head(res.2)#
+lm(res$or.est ~ odds.tru)#
+lm(res.2$OR_MAP_1   ~ odds.tru)#
+lm(res.2$OR_MAP_2   ~ odds.tru)#
+lm(res.2$OR_MAP_3   ~ odds.tru)#
+lm(res.2$OR_MAP_GLD ~ odds.tru)
+lm(or.est.2 ~ odds.tru)
+n <- 20000#
+head(lmm.res.2)#
+k  <- sum((pheno.fam[, 3] - 1)) / dim(pheno.fam)[1]#
+lmm.res.df <- lmm.res.2[, c("SNP", "A1", "A2", "Freq", "b", "se", "p")]#
+lr_Beta_Se <- function(df, n, k)#
+{#
+  # Arguments#
+  #  df: Data fram with elements "SNP", "A1", "A2", "FREQ", "BETA", "SE", "P"#
+  #  n:  Number of individuals can be per SNP or total#
+  #  k:  Prevalence of the cases used to estimate the effects #
+  colnames(df) <- c("SNP", "A1", "A2", "FREQ", "BETA", "SE", "P") #
+  A  <- 1 - k#
+  B  <- k * (1 - k)#
+  d  <- df$BETA / (2 * df$SE ^ 2 * (n - 2) + 2 * df$BETA ^ 2)#
+  a  <- -(k ^ 2) * df$BETA - (A ^ 2) * df$BETA - 2 * B * df$BETA#
+  b  <- A * df$BETA - 2 * B * df$BETA * d + B + k * df$BETA - B - 2 * d * (k^2) * df$BETA#
+  c  <- d * (k * df$BETA - B) - (k ^ 2 ) * df$BETA * (d ^ 2)#
+  p0 <- (-b + sqrt(b ^ 2 - 4 * a * c)) / (2 * a) #
+  p1 <- p0 + d#
+  or.est <- (p1 * (1 - p0)) / (p0 * (1 - p1)) #
+  #or.est[which(or.est < 1)] <- 1 / or.est[which(or.est < 1)]#
+  res <- data.frame(df$SNP, p0, p1, or.est)#
+  return(res)#
+}#
+res <- lr_Beta_Se(lmm.res.df, n, k)
+lm(res$or.est ~ odds.tru)
+lm(or.est.2 ~ odds.tru)
+lm(res$or.est ~ odds.tru)
+lm(res.2$OR_MAP_1   ~ odds.tru)#
+lm(res.2$OR_MAP_2   ~ odds.tru)#
+lm(res.2$OR_MAP_3   ~ odds.tru)#
+lm(res.2$OR_MAP_GLD ~ odds.tru)
+vars.hwe <- matrix(, nrow = dim(gen)[2], ncol = 4)
+p0 <- array(0, dim(gen)[2])#
+p1 <- array(0, dim(gen)[2])#
+vars.hwe <- matrix(, nrow = dim(gen)[2], ncol = 4)#
+odds.tru <- array(0, dim(gen)[2])#
+for (i in seq(1, dim(gen)[2]))#
+{#
+  if (i %% 100 == 0) {print(i)}#
+  con <- gen[which(pheno.fam[, 3] == 1), i]#
+  cas <- gen[which(pheno.fam[, 3] == 2), i]#
+  if (length(which(is.na(con)))> 0)#
+  {#
+    p0[i] <- sum(con, na.rm = T) / (2 * length(con[-which(is.na(con))]))#
+    p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  } else if (length(which(is.na(cas)))> 0)#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas[-which(is.na(cas))]))#
+  } else#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  }#
+  vars.hwe <- c( var(con), var(cas), 2 * p0[i] * (1- p0[i]), 2 * p1[i] * (1 - p1[i]), var(gen[i]))#
+  odds.tru[i] <- (p1[i] * (1 - p0[i])) / ((1 - p1[i]) * p0[i])#
+}#
+head(p0)#
+head(p1)
+p0 <- array(0, dim(gen)[2])#
+p1 <- array(0, dim(gen)[2])#
+vars.hwe <- matrix(, nrow = dim(gen)[2], ncol = 6)#
+odds.tru <- array(0, dim(gen)[2])#
+for (i in seq(1, dim(gen)[2]))#
+{#
+  if (i %% 100 == 0) {print(i)}#
+  con <- gen[which(pheno.fam[, 3] == 1), i]#
+  cas <- gen[which(pheno.fam[, 3] == 2), i]#
+  if (length(which(is.na(con)))> 0)#
+  {#
+    p0[i] <- sum(con, na.rm = T) / (2 * length(con[-which(is.na(con))]))#
+    p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  } else if (length(which(is.na(cas)))> 0)#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas[-which(is.na(cas))]))#
+  } else#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  }#
+  p <- sum(gen[, i]/ (2 * length(gen[, i])))#
+  vars.hwe[i, ] <- c( var(con), var(cas), 2 * p0[i] * (1- p0[i]), 2 * p1[i] * (1 - p1[i]), var(gen[, i]), (2 * p * 1- p))#
+  odds.tru[i] <- (p1[i] * (1 - p0[i])) / ((1 - p1[i]) * p0[i])#
+}
+head(vars.hwe)
+2 * p * (1- p)
+p0 <- array(0, dim(gen)[2])#
+p1 <- array(0, dim(gen)[2])#
+vars.hwe <- matrix(, nrow = dim(gen)[2], ncol = 6)#
+odds.tru <- array(0, dim(gen)[2])#
+for (i in seq(1, dim(gen)[2]))#
+{#
+  if (i %% 100 == 0) {print(i)}#
+  con <- gen[which(pheno.fam[, 3] == 1), i]#
+  cas <- gen[which(pheno.fam[, 3] == 2), i]#
+  if (length(which(is.na(con)))> 0)#
+  {#
+    p0[i] <- sum(con, na.rm = T) / (2 * length(con[-which(is.na(con))]))#
+    p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  } else if (length(which(is.na(cas)))> 0)#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas[-which(is.na(cas))]))#
+  } else#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  }#
+  p <- sum(gen[, i]/ (2 * length(gen[, i])))#
+  vars.hwe[i, ] <- c( var(con), var(cas), 2 * p0[i] * (1- p0[i]), 2 * p1[i] * (1 - p1[i]), var(gen[, i]), (2 * p * (1- p)))#
+  odds.tru[i] <- (p1[i] * (1 - p0[i])) / ((1 - p1[i]) * p0[i])#
+}#
+head(p0)#
+head(p1)
+head(vars.hwe)
+plot(vars.hwe[, 5], vars.hwe[, 6])
+plot(vars.hwe[, 1], vars.hwe[, 3])
+plot(vars.hwe[, 2], vars.hwe[, 4])
+plot(odds.tru, or.est.2)
+plot(1 / odds.tru, or.est.2)
+plot(log.res.2$OR, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res$or.est,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_1,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_2,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_3,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_GLD, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)
+par(mfrow = c(2, 3))
+plot(log.res.2$OR, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res$or.est,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_1,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_2,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_3,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_GLD, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)
+odds.tru <- 1 / odds.tru
+plot(log.res.2$OR, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res$or.est,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_1,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_2,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_3,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_GLD, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)
+plot(log.res.2$OR, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res$or.est,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$or.est.2, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_2,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_3,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_GLD, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)
+plot(or.est.2, odds.tru, xlim = c(0, 3), ylim = c(0, 3))
+par(mfrow = c(2, 3))#
+odds.tru <- 1 / odds.tru #
+plot(log.res.2$OR, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res$or.est,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(or.est.2, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_2,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_3,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)#
+plot(res.2$OR_MAP_GLD, odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)
+summary(lm(res.2$OR_MAP_GLD ~ odds.tr))
+summary(lm(res.2$OR_MAP_GLD ~ odds.tru))
+which(lmm.res$P < 5e-8)
+which(lmm.res$p < 5e-8)
+lmm.res <- lmm.res[which(lmm.res$p < 5e-8), ]
+p0 <- array(0, dim(gen)[2])#
+p1 <- array(0, dim(gen)[2])#
+vars.hwe <- matrix(, nrow = dim(gen)[2], ncol = 6)#
+odds.tru <- array(0, dim(gen)[2])#
+for (i in seq(1, dim(gen)[2]))#
+{#
+  if (i %% 100 == 0) {print(i)}#
+  con <- gen[which(pheno.fam[, 3] == 1), i]#
+  cas <- gen[which(pheno.fam[, 3] == 2), i]#
+  if (length(which(is.na(con)))> 0)#
+  {#
+    p0[i] <- sum(con, na.rm = T) / (2 * length(con[-which(is.na(con))]))#
+    p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  } else if (length(which(is.na(cas)))> 0)#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas[-which(is.na(cas))]))#
+  } else#
+  {#
+  	p0[i] <- sum(con, na.rm = T) / (2 * length(con))#
+  	p1[i] <- sum(cas, na.rm = T) / (2 * length(cas))#
+  }#
+  p <- sum(gen[, i]/ (2 * length(gen[, i])))#
+  vars.hwe[i, ] <- c( var(con), var(cas), 2 * p0[i] * (1- p0[i]), 2 * p1[i] * (1 - p1[i]), var(gen[, i]), (2 * p * (1- p)))#
+  odds.tru[i] <- (p1[i] * (1 - p0[i])) / ((1 - p1[i]) * p0[i])#
+}#
+head(p0)#
+head(p1)
+n <- 20000#
+head(lmm.res.2)#
+k  <- sum((pheno.fam[, 3] - 1)) / dim(pheno.fam)[1]#
+lmm.res.df <- lmm.res[, c("SNP", "A1", "A2", "Freq", "b", "se", "p")]#
+lr_Beta_Se <- function(df, n, k)#
+{#
+  # Arguments#
+  #  df: Data fram with elements "SNP", "A1", "A2", "FREQ", "BETA", "SE", "P"#
+  #  n:  Number of individuals can be per SNP or total#
+  #  k:  Prevalence of the cases used to estimate the effects #
+  colnames(df) <- c("SNP", "A1", "A2", "FREQ", "BETA", "SE", "P") #
+  A  <- 1 - k#
+  B  <- k * (1 - k)#
+  d  <- df$BETA / (2 * df$SE ^ 2 * (n - 2) + 2 * df$BETA ^ 2)#
+  a  <- -(k ^ 2) * df$BETA - (A ^ 2) * df$BETA - 2 * B * df$BETA#
+  b  <- A * df$BETA - 2 * B * df$BETA * d + B + k * df$BETA - B - 2 * d * (k^2) * df$BETA#
+  c  <- d * (k * df$BETA - B) - (k ^ 2 ) * df$BETA * (d ^ 2)#
+  p0 <- (-b + sqrt(b ^ 2 - 4 * a * c)) / (2 * a) #
+  p1 <- p0 + d#
+  or.est <- (p1 * (1 - p0)) / (p0 * (1 - p1)) #
+  #or.est[which(or.est < 1)] <- 1 / or.est[which(or.est < 1)]#
+  res <- data.frame(df$SNP, p0, p1, or.est)#
+  return(res)#
+}
+res
+dim(lmm.res)
+lmm.res.df <- lmm.res[, c("SNP", "A1", "A2", "Freq", "b", "se", "p")]
+lmm.res.df
+dim(lmm.res.df)
+res <- lr_Beta_Se(lmm.res.df, n, k)
+dim(re)
+dim(res)
+plot(res$or.est, odds.tru)
+lmm.res.2 <- lmm.res.2[which(lmm.res.2$p < 5e-8), ]
+lmm.res.df <- lmm.res.2[, c("SNP", "A1", "A2", "Freq", "b", "se", "p")]
+res <- lr_Beta_Se(lmm.res.df, n, k)
+head(odds.tru)
+plot(res$or.est, odds.tru[which(lmm.res.2$p < 5e-8)])
+which(lmm.res.2$p < 5e-8)
+lmm.res.2 <- lmm.res[colnames(gen), ]
+lmm.res.3 <- lmm.res.2[which(lmm.res.2$p < 5e-8), ]
+lmm.res.df <- lmm.res.3[, c("SNP", "A1", "A2", "Freq", "b", "se", "p")]
+res <- lr_Beta_Se(lmm.res.df, n, k)
+plot(res$or.est, odds.tru[which(lmm.res.2$p < 5e-8)])
+plot(res$or.est, 1/odds.tru[which(lmm.res.2$p < 5e-8)])
+lm(res$or.est ~ 1/odds.tru[which(lmm.res.2$p < 5e-8)])
+lm(res$or.est ~ (1/odds.tru[which(lmm.res.2$p < 5e-8)]))
+lm(res$or.est ~ ban)
+ban <- (1/odds.tru[which(lmm.res.2$p < 5e-8)])
+lm(res$or.est ~ ban)
+abline(a = 0, b = 1)
+lm(res$or.est ~ ban)
+plot( 1/odds.tru[which(lmm.res.2$p < 5e-8)], res$or.est,)
+plot( 1/odds.tru[which(lmm.res.2$p < 5e-8)], res$or.est)
+abline(a = 0, b = 1)
+lm(res$or.est ~ ban - 1)
+lm(res.2$OR_MAP_2   ~ odds.tru[which(lmm.res.2$p < 5e-8)])
+odds.tru
+res.2      <- LlmToOddsRatio(lmm.res.df, 0, k)
+head(lmm.res.df)
+dim(lmm.res.df)
+res.2      <- LlmToOddsRatio(lmm.res.df, 0, k)
+p
+lmm.res.df <- df
+df <- lmm.fil
+lmm.fil <- df#
+ if (ref_p == 1)#
+  {#
+	  lmm.fil  <- inner_join(df$SNP, ref.af, #
+		                       by = c("SNP" = "X1"))#
+	  p <- lmm.fil$X3#
+  } else#
+  {#
+ 	  p <- lmm.fil$FREQ#
+  }
+p
+head(lmm.fil)
+dim(lmm.fil)
+colnames(lmm.fil) <- c("SNP", "A1", "A2", "FREQ", "BETA", "SE", "P")#
+ lmm.fil <- df#
+ if (ref_p == 1)#
+  {#
+	  lmm.fil  <- inner_join(df$SNP, ref.af, #
+		                       by = c("SNP" = "X1"))#
+	  p <- lmm.fil$X3#
+  } else#
+  {#
+ 	  p <- lmm.fil$FREQ#
+  }
+p
+ref_p
+head(lmm.fil)
+colnames(lmm.fil) <- c("SNP", "A1", "A2", "FREQ", "BETA", "SE", "P")
+lmm.fil <- df #
+ colnames(lmm.fil) <- c("SNP", "A1", "A2", "FREQ", "BETA", "SE", "P")#
+ if (ref_p == 1)#
+  {#
+	  lmm.fil  <- inner_join(df$SNP, ref.af, #
+		                       by = c("SNP" = "X1"))#
+	  p <- lmm.fil$X3#
+  } else#
+  {#
+ 	  p <- lmm.fil$FREQ#
+  }
+p
+res.2      <- LlmToOddsRatio(lmm.res.df, 0, k)
+head(lmm.fil)
+res.2      <- LlmToOddsRatio(lmm.res.df, 0, k)
+lmm.fil <- df
+colnames(lmm.fil) <- c("SNP", "A1", "A2", "FREQ", "BETA", "SE", "P")
+head(lmm.fil)
+if (ref_p == 1)#
+  {#
+	  lmm.fil  <- inner_join(df$SNP, ref.af, #
+		                       by = c("SNP" = "X1"))#
+	  p <- lmm.fil$X3#
+  } else#
+  {#
+ 	  p <- lmm.fil$FREQ#
+  }
+# -----------------------------------------------------------------#
+# Function to map odds ratios from LMM to logistic regression#
+# -----------------------------------------------------------------#
+LlmToOddsRatio <- function(df, ref_p, k)#
+{#
+ lmm.fil <- df #
+ colnames(lmm.fil) <- c("SNP", "A1", "A2", "FREQ", "BETA", "SE", "P")#
+ if (ref_p == 1)#
+  {#
+	  lmm.fil  <- inner_join(df$SNP, ref.af, #
+		                       by = c("SNP" = "X1"))#
+	  p <- lmm.fil$X3#
+  } else#
+  {#
+ 	  p <- lmm.fil$FREQ#
+  }#
+  # Remember that we code the allele differently so its the negative#
+  # of the estimate#
+  # ---------------#
+  print(paste0("Observed prevalence ", k))#
+  beta     <- lmm.fil$BETA#
+  # -------------------#
+  # Odds ratios 1 and 2#
+  # -------------------#
+  or.map.1 <- 1 + beta / (k * (1 - k)) #
+  or.map.2 <- ((k + beta) / (1 - k - beta)) * ((1 - k) / k)#
+  # Odds ratio 3#
+  # -------------#
+  p_1 <- p  + (beta * p * (1 - p)) / k#
+  p_0 <- (p - k * p_1) / (1 - k)#
+  or.map.3  <- (p_1 * (1 - p_0)) / (p_0 * (1 - p_1))#
+  # -----------------------#
+  # Solve for the quadratic#
+  # -----------------------#
+  K <- k#
+  A <- K * (1 - K)#
+  B <- (1 - K)#
+  pp <- p#
+  c1 <- 2 * A * beta - beta * B + (4 * A * B * beta) / k  + #
+          ((B ^ 2) * (2 * A * beta - beta * k)) / (k ^ 2)#
+  c2 <- A  + beta * B - (4 * A * beta * pp) / k - #
+          (2 * B * pp * (2 * A * beta - beta * k) ) / (k ^ 2) - #
+          (B * (-A + beta * k) ) / k#
+  c3 <- (pp ^ 2 * (2 * A * beta - beta * k)) / (k ^ 2) + #
+	      (pp * (-A + beta * k)) / k#
+  p_0 <- (-c2 + sqrt(c2 ^ 2 - 4 * c1 * c3)) / (2 * c1)#
+  # -------------------#
+  # Odds ratio quadratic#
+  # --------------------#
+  p_1 <- (p - (1 - k) * p_0 ) / k#
+  or.map.gld  <- (p_1 * (1 - p_0)) / (p_0 * (1 - p_1))#
+  # -------------------#
+  # Odds ratio linear 2#
+  # --------------------#
+  p.x1.y0 <- ((1 - k - beta) * (2 * pp * (1 - pp))) / (1 - k - 2 * pp * beta)#
+  p.x2.y0 <- ((1- k - 2 * beta) * (pp ^ 2)) / (1 - k - 2 * pp * beta)#
+  p0      <- 0.5 * p.x1.y0 + p.x2.y0#
+  # p1#
+  # ---#
+  p.x1.y1 <- ((k + beta) * (2 * pp * (1 - pp))) / (k + 2 * pp * beta)#
+  p.x2.y1 <- ((k + 2 * beta) * (pp ^ 2)) / (k + 2 * pp * beta)#
+  p1      <- 0.5 * p.x1.y1 + p.x2.y1#
+  or.5 <- (p1 / (1 - p1)) * ((1 - p0) / p0)#
+  # -------------------#
+  # Bind up the results #
+  # -------------------#
+  res <- data.frame(lmm.fil$SNP, p,#
+                 lmm.fil$FREQ, #
+	             rep(k, length(lmm.fil$BETA)),#
+	             or.map.1,#
+	             or.map.2,#
+	             or.map.3,#
+	             or.map.gld)#
+  colnames(res) <- c("SNP", "AF_REF", "AF_SAM", "K", #
+                     "OR_MAP_1","OR_MAP_2", "OR_MAP_3",  #
+                     "OR_MAP_GLD")#
+  return(res)#
+}
+res.2      <- LlmToOddsRatio(lmm.res.df, 0, k)
+head(lmm.res.df)
+lmm.res.df <- lmm.fil
+dim(lmm.res.df)
+lmm.res.df <- lmm.res.3
+head(lmm.res.df )
+lmm.res.df <- lmm.res.3[, c("SNP", "A1", "A2", "Freq", "b", "se", "p")]
+res.2      <- LlmToOddsRatio(lmm.res.df, 0, k)
+head(res)
+lm(res.2$OR_MAP_2   ~ odds.tru[which(lmm.res.2$p < 5e-8)])
+lm(res.2$OR_MAP_3   ~ odds.tru)
+head(odds.tru[which(lmm.res.2$p < 5e-8)])
+head(res)
+odds.tru  <- 1/ odds.tru
+lm(res.2$OR_MAP_1   ~ odds.tru)
+lm(res.2$OR_MAP_2   ~ odds.tru[which(lmm.res.2$p < 5e-8)])
+lm(res.2$OR_MAP_3   ~ odds.tru[which(lmm.res.2$p < 5e-8)])
+lm(res.2$OR_MAP_GLD ~ odds.tru[which(lmm.res.2$p < 5e-8)])
+plot(log.res.2$OR, odds.tru, xlim = c(0, 3), ylim = c(0, 3))
+odds.tru  <- odds.tru[which(lmm.res.2$p < 5e-8)]
+plot(log.res.2$OR, odds.tru, xlim = c(0, 3), ylim = c(0, 3))
+plot(res$or.est,   odds.tru, xlim = c(0, 3), ylim = c(0, 3))#
+abline(a = 0, b = 1)
+lm(res.2$OR_MAP_2   ~ odds.tru[which(lmm.res.2$p < 5e-8)])#
+lm(res.2$OR_MAP_3   ~ odds.tru[which(lmm.res.2$p < 5e-8)])#
+lm(res.2$OR_MAP_GLD ~ odds.tru[which(lmm.res.2$p < 5e-8)])
+lm(res.2$OR_MAP_2   ~ odds.tru)#
+lm(res.2$OR_MAP_3   ~ odds.tru)#
+lm(res.2$OR_MAP_GLD ~ odds.tru)
+head(beta)
+g <- gen[, 2]* beta[2]
+plot(gen[, 2], g)
+g <- gen[, 2]* -beta[2]
+plot(gen[, 2], g)
+lm(pheno.fam[, 3] ~ gen[, 2])
+lm((pheno.fam[, 3]-1) ~ gen[, 2])
+g <- 0.2920 + gen[, 2] * -beta[2]
+plot(gen[, 2], g)
+plot(gen[, 2], g, ylim = c(0, 1))
+?logit
+??logit
+logit <- 1/(1+g)
+lines(gen[, 2], logit, col = red)
+lines(gen[, 2], logit, col = 'red;)
+lines(gen[, 2], logit, col = 'red')
+logit <- 1/(1+exp(-g))
+lines(gen[, 2], logit, col = 'red')
+logit <- 1 / (1 + exp(-g))
+logit
+lm((pheno.fam[, 3]-1) ~ gen[, 2])
+g <- 0.2920 + gen[, 2] * beta[2]
+logit <- 1 / (1 + exp(-g))
+lines(gen[, 2], logit, col = 'red')
+plot(gen[, 2], g, ylim = c(0, 1))
+logit <- 1 / (1 + exp(-g))
+lines(gen[, 2], logit, col = 'red')
+exp( 0.2920)
+glm((pheno.fam[, 3]-1) ~ gen[, 2], family = binom)
+glm((pheno.fam[, 3]-1) ~ gen[, 2], family = 'binom')
+?glm
+glm((pheno.fam[, 3]-1) ~ gen[, 2], family = 'binomial')
+g2 <- -0.8452    + gen[, 2] *   0.4448
+logit <- 1 / (1 + exp(-(g2)))
+lines(gen[, 2], logit, col = 'red')
+lm((pheno.fam[, 3]-1) ~ gen[, 2])
+g <- 0.2920 + gen[, 2] * 0.1095
+g2 <- -0.8452    + gen[, 2] *   0.4448
+plot(gen[, 2], g, ylim = c(0, 1))
+logit <- 1 / (1 + exp(-(g2)))
+lines(gen[, 2], logit, col = 'red')
+25005*22
+250*5
+1500+1250
+4000-2750
+200+800+100*5
+250*6
+3000 + 600 + 800+200
+2000 + 1550 +300
+0.8878736E+02 * 0.01
+1778 * 0.8878736
+2127-250.47
+setwd('~/Dropbox/Post_Doc_QBI/logistic_reg_prob/shiny/')
+runApp()
+library(shiny)
+runApp()
+library(readr)
+read_delim
+?read_delim
+runApp()
+runApp()
+runApp()
+runApp()
+x <- read.table("~/Desktop/test_sml.txt")
+head(x)
+x <- read.table("~/Desktop/test_sml.txt", header = T)
+x$K <- sample(c(0.4, 0.5, 0.45), 10000)
+x$K <- sample(10000, c(0.4, 0.5, 0.45))
+x$K <- sample(c(0.4, 0.5, 0.45), 9999)
+x$K <- sample(9999, c(0.4, 0.5, 0.45))
+x$K <- sample(c(0.4, 0.5, 0.45), 9999, replacement = T)
+x$K <- sample(c(0.4, 0.5, 0.45), 9999, replace = T)
+head(x)
+write.table(x, "~/Desktop/test_sml.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+runApp
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
