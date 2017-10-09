@@ -1,0 +1,615 @@
+mean(46.4, 44.8, 49.2)
+mean(c(46.4, 44.8, 49.2))
+summary(fm.mac <- lmer(score ~ 1 + (1|Worker) + (1|Machine), Machines))
+ranef(fm.mac)
+59.650 - 8.70711058 - 7.2113625
+predict(fm.mac)
+Machines
+cbind(Machines, predict(fm.mac))
+ranef(fm.mac)$Worker
+summary(fm.mac <- lmer(score ~ 1 + (1|Worker) + (1|Machine), Machines))
+ranef(fm.mac)$Worker
+ranef(fm.mac)
+59.650 + -8.70711058 + -7.2113625
+snp.con <- rbinom(1000, 2, 0.1)
+snp.cas <- rbinom(1000, 2, 0.2)
+var(snp.con)
+2 * 0.1
+2 * 0.2
+var(snp.cas)
+2 * 0.1 * (1 - 0.1)
+2 * 0.2 * (1 - 0.2)
+snp <- c(snp.con, snp.cas)
+p <- sum(snp) / 2*length(snp)
+p
+p <- sum(snp) / (2 * length(snp))
+p
+var(snp)
+2 * p * (1 - p)
+var(snp)
+snp <- c(snp.con[1:500], snp.cas[1:500])
+p <- sum(snp) / (2 * length(snp))
+2 * p * (1 - p)
+var(snp)
+or <- (p1 / (1 - p1)) * ((1 - p0) / p0)
+p0 <- 0.1#
+p1 <- 0.2#
+or <- (p1 / (1 - p1)) * ((1 - p0) / p0)
+or
+2 * p0 * (1 - p0)
+2 * p1 * (1 - p1)
+p0 <- 0.1#
+p1 <- 0.4#
+snp.con <- rbinom(1000, 2, p0)#
+snp.cas <- rbinom(1000, 2, p1)#
+2 * p0 * (1 - p0)#
+var(snp.con)
+2 * p1 * (1 - p1)
+var(snp.cas)
+or <- (p1 / (1 - p1)) * ((1 - p0) / p0)
+or
+snp <- c(snp.con[1:500], snp.cas[1:500])
+p <- sum(snp) / (2 * length(snp))
+2 * p * (1 - p)
+var(snp)
+length(seq(0.1, 0.5, 0.01))
+p0 <- 0.1#
+vars.or <- matrix(0, nrow = 41, ncol = 7)#
+k <- 0#
+for (i in seq(0.1, 0.5, 0.01))#
+{#
+  p1 <- i#
+  snp.con <- rbinom(10000, 2, p0)#
+  snp.cas <- rbinom(10000, 2, p1)#
+  vars[k, 1] <- 2 * p0 * (1 - p0)#
+  vars[k, 2] <- var(snp.con)#
+  vars[k, 3] <- 2 * p1 * (1 - p1)#
+  vars[k, 4] <- var(snp.cas)#
+  or <- (p1 / (1 - p1)) * ((1 - p0) / p0)#
+  snp <- c(snp.con[1:5000], snp.cas[1:5000])#
+  p   <- sum(snp) / (2 * length(snp))#
+  vars[k, 5] <- 2 * p * (1 - p)#
+  vars[k, 6] <- var(snp)#
+  vars[k, 7] <- or#
+  k <- k + 1#
+}
+p0 <- 0.1#
+vars.or <- matrix(0, nrow = 41, ncol = 7)#
+k <- 0#
+for (i in seq(0.1, 0.5, 0.01))#
+{#
+  p1 <- i#
+  snp.con <- rbinom(10000, 2, p0)#
+  snp.cas <- rbinom(10000, 2, p1)#
+  vars.or[k, 1] <- 2 * p0 * (1 - p0)#
+  vars.or[k, 2] <- var(snp.con)#
+  vars.or[k, 3] <- 2 * p1 * (1 - p1)#
+  vars.or[k, 4] <- var(snp.cas)#
+  or <- (p1 / (1 - p1)) * ((1 - p0) / p0)#
+  snp <- c(snp.con[1:5000], snp.cas[1:5000])#
+  p   <- sum(snp) / (2 * length(snp))#
+  vars.or[k, 5] <- 2 * p * (1 - p)#
+  vars.or[k, 6] <- var(snp)#
+  vars.or[k, 7] <- or#
+  k <- k + 1#
+}
+head(vars.or)
+plot(vars.or[, 7], vars.or[, 6])
+plot(vars.or[, 7], vars.or[, 6], type = "l")
+plot(vars.or[, 7], vars.or[, 6], type = "n")
+lines(vars.or[, 7], vars.or[, 6])
+vars.or[, 6]
+k <- 1#
+for (i in seq(0.1, 0.5, 0.01))#
+{#
+  p1 <- i#
+  snp.con <- rbinom(10000, 2, p0)#
+  snp.cas <- rbinom(10000, 2, p1)#
+  vars.or[k, 1] <- 2 * p0 * (1 - p0)#
+  vars.or[k, 2] <- var(snp.con)#
+  vars.or[k, 3] <- 2 * p1 * (1 - p1)#
+  vars.or[k, 4] <- var(snp.cas)#
+  or <- (p1 / (1 - p1)) * ((1 - p0) / p0)#
+  snp <- c(snp.con[1:5000], snp.cas[1:5000])#
+  p   <- sum(snp) / (2 * length(snp))#
+  vars.or[k, 5] <- 2 * p * (1 - p)#
+  vars.or[k, 6] <- var(snp)#
+  vars.or[k, 7] <- or#
+  k <- k + 1#
+}#
+head(vars.or)#
+lines(vars.or[, 7], vars.or[, 6])
+plot(vars.or[, 7], vars.or[, 6])
+plot(vars.or[, 7], vars.or[, 6], type = "l")
+lines(vars.or[, 7], vars.or[, 5], col = "blue")
+plot(vars.or[, 7], vars.or[, 6], type = "l", xlab = c(0, 10), ylab = c(0, 0.5))
+plot(vars.or[, 7], vars.or[, 6], type = "l", xlim = c(0, 10), ylim = c(0, 0.5))
+lines(vars.or[, 7], vars.or[, 5], col = "blue")
+lines(vars.or[, 7], vars.or[, 1], col = "red")
+lines(vars.or[, 7], vars.or[, 2], col = "red")
+lines(vars.or[, 7], vars.or[, 3], col = "purple")
+lines(vars.or[, 7], vars.or[, 4], col = "purple")
+23/30
+plot(vars.or[, 7], vars.or[, 6], type = "l", #
+     xlim = c(0, 10), ylim = c(0, 0.5),#
+     xlab = "Simulated odds ratio",#
+     ylab = "Variance")#
+lines(vars.or[, 7], vars.or[, 5], col = "blue")#
+lines(vars.or[, 7], vars.or[, 1], col = "red")#
+lines(vars.or[, 7], vars.or[, 2], col = "red")#
+lines(vars.or[, 7], vars.or[, 3], col = "purple")#
+lines(vars.or[, 7], vars.or[, 4], col = "purple")
+x <- read.table("~/Desktop/ergostool.txt")
+head(x)
+x$effort
+x$Type
+class(x$Type)
+y <- 0.0012*x^2 - 0.0889*x + 2.5438
+x <- 40
+y <- 0.0012*x^2 - 0.0889*x + 2.5438
+y
+((40 + 44)/2)
+y.obs <- c(1.46, 1.16, 1, 1.04, 1.20, 1.22)
+plot(x, y.obs)
+x <- c(((12 + 19)/2), ((20 + 24)/2), ((25 + 29)/2), ((30 + 34)/2), #
+       ((35 + 39)/2), ((40 + 44)/2))#
+y.obs <- c(1.46, 1.16, 1, 1.04, 1.20, 1.22)#
+plot(x, y.obs)
+plot(x, y.obs, ylim = c(0.8, 1.5))
+lm(y.obs ~ 1 + x + I(x^2))
+food <- read.table("~/Desktop/clustering/foodstuff.txt",#
+                    header = T, row.names = 1)#
+food.std <- scale(food, center = T, scale = T)#
+dist.food <- dist(food.std, method = "euclidean")#
+food.single.link <- hclust(dist.food, method = "single")#
+food.single.link.cp <- hclust(dist.food, method = "complete")#
+food.single.link.avg <- hclust(dist.food, method = "average")#
+par(mfrow = c(1, 3))#
+plot(food.single.link)#
+plot(food.single.link.cp)#
+plot(food.single.link.avg)#
+# There are many similarities but the ordering is changed#
+# Extracting clusters#
+cut.2 <- cutree(food.single.link, k = 2)#
+cut.5 <- cutree(food.single.link, k = 5)#
+cut.5.2 <- cutree(food.single.link, h = 3.5)#
+# Scatterplot the clusters#
+my.colour = ifelse(cut.2 == 1, 'red', 'blue')#
+pairs(food, panel = function(x, y) {text(x, y, cut.2, col = my.colour)})#
+# AR and AC are different from the rest and they are usuall low #
+# energy low protein and low fat foods. Quite high in Iron
+load("~/Desktop/clustering/Golub.RData")#
+ls()#
+genes.cor <- cor(t(golub100), use = 'pairwise.complete.obs',#
+                 method = 'pearson')#
+genes.cor[1:10, 1:10]#
+genes.cor.dist <- as.dist(1-genes.cor)#
+genes.tree <- hclust(genes.cor.dist, method = 'average')#
+plot(genes.tree, main = "Gene clustering by Pearson distance#
+     and average linkage", xlab = NULL, cex = 0.1, #
+     cex.main = 1.8)#
+# Two broader classes of genes#
+# Let's use spearman#
+samples.cor.spear <- cor(golub100, use = 'pairwise.complete.obs',#
+                 method = 'spearman')#
+samples.cor.dist.spear <- as.dist(1-samples.cor.spear)#
+samples.spear <- hclust(samples.cor.dist.spear, method = 'average')#
+plot(samples.spear, main = "Gene clustering by Spearman distance#
+     and average linkage", xlab = NULL, cex = 1.1, #
+     cex.main = 1.5)#
+? hclust#
+# ward.D ward.D2 mcquitty centroid median#
+# Heatmap#
+install.packages("~/Desktop/RColorBrewer_1.1-2.tgz", repos = NULL, type="source")#
+library('RColorBrewer')#
+col <- colorRampPalette(brewer.pal(10, 'RdBu'))(256)#
+col <- rev(col)#
+patientcolors <- ifelse(gol.factor == "AML", 'red', 'blue')#
+heatmap(golub100, scale = 'row', col = col, Rowv = as.dendrogram(genes.tree),#
+        Colv = as.dendrogram(samples.spear), main = 'Golub100 data',#
+        ColSideColors=patientcolors)#
+install.packages("gplots")#
+library(gplots)#
+heatmap(golub100, scale = 'row', Rowv = as.dendrogram(genes.tree),#
+        Colv = as.dendrogram(samples.spear), col = redgreen(75))#
+# PCA practical#
+food.pc <- prcomp(food, center = T, scale = T)#
+food.pc$sdev^2 / sum(food.pc$sdev^2)#
+plot(food.pc)#
+# Projection#
+plot(food.pc$x[, 1], food.pc$x[, 2], type = 'n')#
+text(food.pc$x[, 1], food.pc$x[, 2], labels = rownames(food))#
+#
+my.color.vector <- rep('green', times=nrow(food))#
+my.color.vector[cut.5==2] <- 'blue'#
+my.color.vector[cut.5==3] <- 'red'#
+my.color.vector[cut.5==4] <- 'orange'#
+my.color.vector[cut.5==5] <- 'brown'#
+plot(food.pc$x[,1], food.pc$x[,2], type = 'n')#
+text(food.pc$x[,1], food.pc$x[,2], labels = rownames(food), col = my.color.vector)#
+biplot(food.pc)
+library(cluster)#
+install.packages("fpc", repos='https://cran.csiro.au/')#
+library(fpc)#
+food.k5 <- kmeans(food.std,  centers=4,  iter.max=100,  nstart=25)#
+plotcluster(food.std, food.k5$cluster)#
+		plotcluster(dat, clus$cluster)#
+clusplot(food.std, food.k5$cluster, color=TRUE, shade=TRUE, #
+		         labels=2, lines=0)
+((k + beta * (1-p)) / (k-beta*p))*((1 - k + beta * p) / (1-k-beta(1-p)))
+k <- 0.5
+beta <- 0.5
+p <- 0.2
+((k + beta * (1-p)) / (k-beta*p))*((1 - k + beta * p) / (1-k-beta(1-p)))
+((k + beta * (1-p)) / (k-beta*p))*((1 - k + beta * p) / (1-k-beta*(1-p)))
+beta*p
+beta <- 15
+beta*p
+((k + beta * (1-p)) / (k-beta*p))*((1 - k + beta * p) / (1-k-beta*(1-p)))
+1+b/(k*(1-k))
+1+beta/(k*(1-k))
+((k + beta * (1-p)) / (k-beta*p))
+((1 - k + beta * p) / (1 - k - beta*(1 - p)))
+k <- 0.01
+beta <- 15
+p <- 0.2
+1 + beta / (k * (1 - k))
+k <- 0.01#
+beta <- 1#
+p <- 0.2#
+beta*p
+1 + beta / (k * (1 - k))
+beta <- 2
+p <- 0.2
+beta*p
+1 + beta / (k * (1 - k))
+beta <- 0.5
+p <- 0.2
+beta*p
+1 + beta / (k * (1 - k))
+((k + beta * (1-p)) / (k-beta*p)) * ((1 - k + beta * p) / (1 - k - beta*(1 - p)))
+k <- 0.01
+beta <- 0.2
+p <- 0.2
+beta*p
+((k + beta * (1-p)) / (k-beta*p)) * ((1 - k + beta * p) / (1 - k - beta*(1 - p)))
+1 + beta / (k * (1 - k))
+beta <- 0.01
+p <- 0.2
+beta*p
+1 + beta / (k * (1 - k))
+((k + beta * (1-p)) / (k-beta*p)) * ((1 - k + beta * p) / (1 - k - beta*(1 - p)))
+k = 4
+r = 1
+s = 0
+p <- c(0.8, 0.1, 0.05, 0.05)
+p <- c(0.8, 0.1, 0.05, 0.05)#
+  for (i seq(1, k))#
+  { # where k is the number of categories#
+    v = rbinom(1, p[i] / r) distribution // where p[i] is the probability of category i#
+    for j from 1 to v#
+      z[s++] = i // where z is an array in which the results are stored#
+    n = n - v#
+    r = r - p[i]#
+  }
+i = 1
+p <- c(0.8, 0.1, 0.05, 0.05)
+s = 0
+r = 1
+k = 4
+v = rbinom(1, p[i] / r) # distribution // where p[i] is the probability of category i
+v = rbinom(1, (p[i] / r)) # distribution // where p[i] is the probability of category i
+v = rbinom(1, pbin) # distribution // where p[i] is the probability of category i
+v = rbinom(1, 1, pbin) # distribution // where p[i] is the probability of category i
+pbin <- p[i] / r
+v = rbinom(1, 1, pbin) # distribution // where p[i] is the probability of category i
+v
+rbinom(1, 1, pbin)
+pbin
+?rbinom
+rbinom(1, 1, pbin)
+for (j in seq(1, v))#
+    {#
+      z[s++] = i # where z is an array in which the results are stored#
+    }
+z <- array(0, 4)
+for (j in seq(1, v))#
+    {#
+      z[s++] = i # where z is an array in which the results are stored#
+    }
+s++
+for (j in seq(1, v))#
+    {#
+    	  s <- s + 1#
+      z[s] = i # where z is an array in which the results are stored#
+    }
+z
+n = n - v
+n
+v
+n <- 10000
+n = n - v
+r = r - p[i]
+r
+for (i in seq(1, k))#
+  { # where k is the number of categories#
+  	pbin <- p[i] / r#
+    v = rbinom(1, 1, pbin) # distribution // where p[i] is the probability of category i#
+    for (j in seq(1, v))#
+    {#
+    	  s <- s + 1#
+      z[s] = i # where z is an array in which the results are stored#
+    }#
+    n = n - v#
+    r = r - p[i]#
+  }
+k = 4#
+  r = 1#
+  s = 0#
+  p <- c(0.8, 0.1, 0.05, 0.05)#
+  z <- array(0, 4)#
+  n <- 10000#
+  for (i in seq(1, k))#
+  { # where k is the number of categories#
+  	pbin <- p[i] / r#
+    v = rbinom(1, 1, pbin) # distribution // where p[i] is the probability of category i#
+    for (j in seq(1, v))#
+    {#
+    	  s <- s + 1#
+      z[s] = i # where z is an array in which the results are stored#
+    }#
+    n = n - v#
+    r = r - p[i]#
+  }
+pbin
+v = rbinom(100, 1, pbin) # distribution // where p[i] is the probability of category i
+p.sum <- cumsum(p)
+p <- c(0.8, 0.1, 0.05, 0.05)
+p.sum <- cumsum(p)
+ss <- unif(1)
+ss <- runif(1)
+ss
+(p.sum < ss)
+(p.sum >= ss)
+p.sum
+(p.sum <= ss)
+min(p.sum <= ss)
+min(p.sum[which((p.sum <= ss))])
+which((p.sum <= ss))
+p.sum
+ssculm <- 0  #
+        xx <- runif(1)  # draw a sample from a random uniform#
+        indistflag <- 0#
+        for (kk in 1:ndist) #
+        {#
+          # /denom => not necessary since now s[kk] contains directly % values#
+		  ssculm <- ssculm + p[kk]#
+		  if (xx < ssculm) #
+		  {#
+		    indistflag <- kk # snp is in this distribution#
+			if (l > burn) #
+			{#
+			  indist[k] <- kk + indist[k]  #
+			}#
+			snpindist[kk] <- snpindist[kk] + 1#
+			break;#
+		  }#
+        }
+ndist <- 4#
+        ssculm <- 0  #
+        xx <- runif(1)  # draw a sample from a random uniform#
+        indistflag <- 0#
+        for (kk in 1:ndist) #
+        {#
+          # /denom => not necessary since now s[kk] contains directly % values#
+		  ssculm <- ssculm + p[kk]#
+		  if (xx < ssculm) #
+		  {#
+		    indistflag <- kk # snp is in this distribution#
+			if (l > burn) #
+			{#
+			  indist[k] <- kk + indist[k]  #
+			}#
+			snpindist[kk] <- snpindist[kk] + 1#
+			break;#
+		  }#
+        }
+indist <- array(0, 4)#
+for (l in seq(1, 1000))#
+{#
+        ssculm <- 0  #
+        xx <- runif(1)  # draw a sample from a random uniform#
+        indistflag <- 0#
+        for (kk in 1:ndist) #
+        {#
+          # /denom => not necessary since now s[kk] contains directly % values#
+		  ssculm <- ssculm + p[kk]#
+		  if (xx < ssculm) #
+		  {#
+		    indistflag <- kk # snp is in this distribution#
+			if (l > burn) #
+			{#
+			  indist[k] <- kk + indist[k]  #
+			}#
+			snpindist[kk] <- snpindist[kk] + 1#
+			break;#
+		  }#
+        }#
+}
+ndist <- 4#
+burn  <- 1#
+indist <- array(0, 4)#
+for (l in seq(1, 1000))#
+{#
+        ssculm <- 0  #
+        xx <- runif(1)  # draw a sample from a random uniform#
+        indistflag <- 0#
+        for (kk in 1:ndist) #
+        {#
+          # /denom => not necessary since now s[kk] contains directly % values#
+		  ssculm <- ssculm + p[kk]#
+		  if (xx < ssculm) #
+		  {#
+		    indistflag <- kk # snp is in this distribution#
+			if (l > burn) #
+			{#
+			  indist[k] <- kk + indist[k]  #
+			}#
+			snpindist[kk] <- snpindist[kk] + 1#
+			break;#
+		  }#
+        }#
+}
+indist
+snpindist <- array(0, 4)#
+for (l in seq(1, 1000))#
+{#
+        ssculm <- 0  #
+        xx <- runif(1)  # draw a sample from a random uniform#
+        indistflag <- 0#
+        for (kk in 1:ndist) #
+        {#
+          # /denom => not necessary since now s[kk] contains directly % values#
+		  ssculm <- ssculm + p[kk]#
+		  if (xx < ssculm) #
+		  {#
+		    indistflag <- kk # snp is in this distribution#
+			if (l >= burn) #
+			{#
+			  indist[k] <- kk + indist[k]  #
+			}#
+			snpindist[kk] <- snpindist[kk] + 1#
+			break;#
+		  }#
+        }#
+}
+snpindist
+snpindist / cumSum(snpindist)
+snpindist / cumsum(snpindist)
+snpindist / sum(snpindist)
+p <- c(0.8, 0.1, 0.05, 0.05)#
+p.sum <- cumsum(p)#
+ss <- runif(1)#
+min(p.sum[which((p.sum <= ss))])#
+ndist <- 4#
+burn  <- 1#
+indist <- array(0, 4)#
+snpindist <- array(0, 4)#
+for (l in seq(1, 10000))#
+{#
+        ssculm <- 0  #
+        xx <- runif(1)  # draw a sample from a random uniform#
+        indistflag <- 0#
+        for (kk in 1:ndist) #
+        {#
+          # /denom => not necessary since now s[kk] contains directly % values#
+		  ssculm <- ssculm + p[kk]#
+		  if (xx < ssculm) #
+		  {#
+		    indistflag <- kk # snp is in this distribution#
+			if (l >= burn) #
+			{#
+			  indist[k] <- kk + indist[k]  #
+			}#
+			snpindist[kk] <- snpindist[kk] + 1#
+			break;#
+		  }#
+        }#
+}
+snpindist / sum(snpindist)
+50/60
+sum(c(19.5,	23,	17.25))
+sum(c(19.5,	24,	17.25))
+sum(c(19.5,	24,	17.25)) + 30*(50/60)
+x <- c(0.5,0.716666667,0.666666667,0.933333333,0.533333333,0.8,0.7,0.833333333,0.75,0.95,0.5,0.95,0.416666667,0.883333333,0.766666667,0.816666667,0.833333333,0.633333333,0.7,0.083333333)
+hist(x)
+plot(density(x))
+plot(density(x), bw = 2)
+plot(density(x), bw = 1)
+59.8 + 25
+y <-c(7,6,4,7,5,6,7,6,7,4,5,5,7,7,6,6,7,7,7)
+table(y)
+prop(y)
+prop.table(y)
+2 3 5 9 /20
+k <- 0.5#
+beta <- seq(0,1, 0.01)#
+p <- 0.1#
+k <- 0.5#
+out <- k * (1 - k) - 2 * 2 * p * (1 - p) * (beta ^ 2)#
+plot(beta, out)#
+max(res.pt1$b) #
+abline(v=0.5)#
+abline(h=0)#
+0.5*(1-0.5)#
+2*0.1*(1-0.1)*0.833^2#
+sqrt(0.125/(2*p*(1-p)))
+beta <- 0.8
+p0_com <- (1 - k) * (2 * beta * p - k) + sqrt((1 - k) * ((k ^ 2) * (1 - k) - 4 * (beta ^ 2) * p * k * (1 -p)))#
+top    <- 2 * beta * (2 * p * beta * (1 - k) - p0_com)#
+bot    <- 2 * beta * (k - p) * p0_com + p0_com ^ 2#
+or <- 1 + top / bot#
+or
+p
+k
+beta
+beta <- seq(0,1, 0.01)#
+#beta <- 0.8#
+p <- 0.1#
+k <- 0.5#
+out <- k * (1 - k) - 2 * 2 * p * (1 - p) * (beta ^ 2)#
+plot(beta, out)#
+max(res.pt1$b)
+out
+beta <- 0.5
+p0_com <- (1 - k) * (2 * beta * p - k) + sqrt((1 - k) * ((k ^ 2) * (1 - k) - 4 * (beta ^ 2) * p * k * (1 -p)))#
+top    <- 2 * beta * (2 * p * beta * (1 - k) - p0_com)#
+bot    <- 2 * beta * (k - p) * p0_com + p0_com ^ 2#
+or <- 1 + top / bot#
+or
+beta <- 0.3
+p0_com <- (1 - k) * (2 * beta * p - k) + sqrt((1 - k) * ((k ^ 2) * (1 - k) - 4 * (beta ^ 2) * p * k * (1 -p)))#
+top    <- 2 * beta * (2 * p * beta * (1 - k) - p0_com)#
+bot    <- 2 * beta * (k - p) * p0_com + p0_com ^ 2#
+or <- 1 + top / bot#
+or
+beta <- 0.45
+p0_com <- (1 - k) * (2 * beta * p - k) + sqrt((1 - k) * ((k ^ 2) * (1 - k) - 4 * (beta ^ 2) * p * k * (1 -p)))#
+top    <- 2 * beta * (2 * p * beta * (1 - k) - p0_com)#
+bot    <- 2 * beta * (k - p) * p0_com + p0_com ^ 2#
+or <- 1 + top / bot#
+or
+beta <- 0.49
+p0_com <- (1 - k) * (2 * beta * p - k) + sqrt((1 - k) * ((k ^ 2) * (1 - k) - 4 * (beta ^ 2) * p * k * (1 -p)))#
+top    <- 2 * beta * (2 * p * beta * (1 - k) - p0_com)#
+bot    <- 2 * beta * (k - p) * p0_com + p0_com ^ 2#
+or <- 1 + top / bot#
+or
+d=0.4
+-k*beta*(d-d^2)
+d=0.5
+-k*beta*(d-d^2)
+d=0.9
+-k*beta*(d-d^2)
+d=0.1
+-k*beta*(d-d^2)
+d=0.5
+-k*beta*(d-d^2)
+-0.01*beta*(d-d^2)
+setwd('~/Dropbox/Post_Doc_QBI/logistic_reg_prob/shiny/server.R')
+setwd('~/Dropbox/Post_Doc_QBI/logistic_reg_prob/shiny)
+setwd('~/Dropbox/Post_Doc_QBI/logistic_reg_prob/shiny')
+exp(0.01)
+exp(0.2)
+library(shiny)
+runApp()
+exp(-0.01)
+runApp()
+exp(-0.09)
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()

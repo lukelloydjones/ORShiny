@@ -20,7 +20,7 @@ shinyServer(function(input, output) {
     {
       return(NULL)
     }
-    x <- read_delim(inFile$datapath, col_names=T, delim = input$sep)
+    x <- read_delim(inFile$datapath, col_names=input$header, delim = input$sep)
     c.names <- colnames(x)
     if (length(which(c.names == "K")) == 1)
     {
@@ -34,19 +34,11 @@ shinyServer(function(input, output) {
   
   output$download <- downloadHandler(
     filename = function() {
-      paste0("transformed_", input$file1)
+      paste0("mapped_", input$file1)
     }, 
     content = function(file) {
       write.table(bound, file, sep = "\t", row.names = FALSE, quote = FALSE)
     }
   )
-  
-    # Show the first "n" observations
-  output$view <- renderTable({
-    input.df <- data.frame(input$numericB, input$numericK, input$numericP)
-    colnames(input.df) <- c("BETA", "K", "FREQ")
-	bound   <<- LlmToOddsRatio(input.df, input$numericK)
-    bound
-  }, include.rownames=FALSE)
     
 })
