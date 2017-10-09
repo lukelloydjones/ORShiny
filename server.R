@@ -24,10 +24,10 @@ shinyServer(function(input, output) {
     c.names <- colnames(x)
     if (length(which(c.names == "K")) == 1)
     {
-      bound   <<- LlmToOddsRatio(x, x$K)	
+      bound   <<- LmToOddsRatio(x, x$K, 0)	
     } else
     {
-      bound   <<- LlmToOddsRatio(x, input$numericK)
+      bound   <<- LmToOddsRatio(x, input$numericK, 0)
     }
     return(head(bound, 50))
   })
@@ -45,7 +45,7 @@ shinyServer(function(input, output) {
   output$view <- renderTable({
     input.df <- data.frame(input$numericB, input$numericK, input$numericP)
     colnames(input.df) <- c("BETA", "K", "FREQ")
-	bound   <<- LlmToOddsRatio(input.df, input$numericK)
+	bound   <<- LmToOddsRatio(input.df, input$numericK, 0)
     bound
   }, include.rownames=FALSE)
     

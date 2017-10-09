@@ -78,17 +78,6 @@ LmToOddsRatio <- function(lmm.fil, k, std.err)
   c2 <- (1 - k) * (1 - 4 * beta * pp) - (2 * beta * pp * (1 - k) * (1 - 2 * k)) / k
   c3 <- (pp ^ 2) * beta * (1 - 2 * k) / k + pp * (k - 1 + beta)
   f0 <- c1 + c2 + c3
-  p.0.1 <- (-c2 + sqrt(c2 ^ 2 - 4 * c1 * c3)) / (2 * c1)
-  p.0.2 <- (-c2 - sqrt(c2 ^ 2 - 4 * c1 * c3)) / (2 * c1)
-  # There should be only one solution in (0, 1). Take the set that has all elements in (0, 1)
-  if (all(p.0.1 > 0 & p.0.1 < 1))
-  {
-    p_0 <- p.0.1
-  } else if (all(p.0.2 > 0 & p.0.2 < 1))
-  {
-  	p_0 <- p.0.2
-  }
-  p_1 <- (p - (1 - k) *  p_0 ) / k
   # ---------------------------------------------------------------
   # Calculate the upper and lower bounds for returning sensible ORs
   # ---------------------------------------------------------------
@@ -100,19 +89,49 @@ LmToOddsRatio <- function(lmm.fil, k, std.err)
   {
   	 # -------------------
      # Odds ratio quadratic
-     # --------------------    
+     # --------------------  
+     p.0.1 <- (-c2 + sqrt(c2 ^ 2 - 4 * c1 * c3)) / (2 * c1)
+     p.0.2 <- (-c2 - sqrt(c2 ^ 2 - 4 * c1 * c3)) / (2 * c1)
+     # There should be only one solution in (0, 1). Take the set that has all elements in (0, 1)
+     if (all(p.0.1 > 0 & p.0.1 < 1))
+     {
+       p_0 <- p.0.1
+     } else if (all(p.0.2 > 0 & p.0.2 < 1))
+     {
+  	   p_0 <- p.0.2
+     }
+     p_1 <- (p - (1 - k) *  p_0 ) / k  
      or.map.gld  <- (p_1 * (1 - p_0)) / (p_0 * (1 - p_1))
      or.map.gld[which(is.na(c3))] <- NA
      or.map.gld[which(is.na(f0))]  <- NA   
-  } else if (!all(beta < lb | beta > ub))  
+  } else if (!all(beta > lb & beta < ub))  
   {
+  	 c1[which(beta < lb | beta> ub)] <- NA
+  	 c2[which(beta < lb | beta> ub)] <- NA
+  	 c3[which(beta < lb | beta> ub)] <- NA
+     p.0.1 <- (-c2 + sqrt(c2 ^ 2 - 4 * c1 * c3)) / (2 * c1)
+     p.0.2 <- (-c2 - sqrt(c2 ^ 2 - 4 * c1 * c3)) / (2 * c1)
+     # There should be only one solution in (0, 1). Take the set that has all elements in (0, 1)
+     if (!all(is.na(p.0.1)) & !all(is.na(p.0.1)))
+     {
+       if (all(p.0.1 > 0 & p.0.1 < 1))
+       {
+         p_0 <- p.0.1
+       } else if (all(p.0.2 > 0 & p.0.2 < 1))
+       {
+         p_0 <- p.0.2
+       }
+     } else
+     {
+     	p_0 <- NA
+     }
+     p_1 <- (p - (1 - k) *  p_0 ) / k
   	 or.map.gld  <- (p_1 * (1 - p_0)) / (p_0 * (1 - p_1))
-  	 or.map.gld[which(beta < lb | beta> ub)] <- NA
   } else
   {
   	 # If there are no concerns with NAs and ORs on the boundary
   	 # calculate the full set of results
-     or.map.gld  <- (p_12 * (1 - p_02)) / (p_02 * (1 - p_12))
+     or.map.gld  <- (p_1 * (1 - p_0)) / (p_0 * (1 - p_1))
   }
   # ---------------------------------------------------------------
   # If standard error mappings are wanted
