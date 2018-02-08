@@ -15,13 +15,13 @@ LmToOddsRatio <- function(lmm.fil, k, std.err)
   #           allele frequency (FREQ) and sample prevalence (K)
   #        k: If the user just want to specify one k for all 
   #           genetic variants
-  #  std.err: Logical for if the standard error transformation is 
-  #           wanted. std.err = 1 implies the SE transformation
-  #           will be returned. WARNING: REQUIRES A "SE" COLUMN 
-  #           AND  N = NUMBER OF INDIVIDUALS COLUMN
+  #  std.err: Default should be 0. Logical for if the standard error 
+  #           transformation is required. std.err = 1 implies the SE 
+  #           transformation will be returned. WARNING: REQUIRES A 
+  #           "SE" COLUMN AND  N = NUMBER OF INDIVIDUALS COLUMN
   # 
   # Returns:
-  # Original lmm.fil data frame with the odds ratio appended
+  #   Original lmm.fil data frame with the odds ratio appended
   # ------------------------------------------------------------------------
   # Grab the columns names
   df.names <- colnames(lmm.fil) 
