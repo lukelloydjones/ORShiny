@@ -1,0 +1,1 @@
+scp $1 uqllloyd@ctgg.qbi.uq.edu.au:/srv/shiny-server/LMOR
