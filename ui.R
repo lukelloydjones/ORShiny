@@ -1,4 +1,4 @@
-shinyUI(pageWithSidebar(
+shinyUI(fluidPage(tags$head(includeScript("google-analytics.js")),
   headerPanel("Linear (mixed) model effects to odds ratios"),
   sidebarPanel(
     h3("Whole file transformation"),
