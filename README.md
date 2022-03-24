@@ -1,7 +1,7 @@
-# ============================================================================
+# ================================
 # Repo - ORShiny
 # Author: Luke Lloyd-Jones
-# ============================================================================
+# ================================
 Shiny app source code for odds ratio mapping
 
 App is currently being served at http://cnsgenomics.com/shiny/LMOR/
